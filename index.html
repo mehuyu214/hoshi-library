@@ -13,15 +13,15 @@
   <div class="portal-bg"><img id="portalBgA" alt=""><img id="portalBgB" alt=""></div>
   <div class="portal-shade"></div>
   <header class="portal-head">
-    <div class="logo-type"><span class="logo-main">VN Arcade</span><span class="logo-sub">オンライン・ビジュアルノベル</span></div>
+    <div class="logo-type"><span class="logo-main">星屑ライブラリ</span><span class="logo-sub">HOSHIZUKU LIBRARY</span></div>
     <div class="portal-tools">
       <button id="portalConfigBtn" class="tool-btn" type="button">コンフィグ</button>
     </div>
   </header>
-  <p class="portal-note">ブラウザでそのまま遊べる、5つの物語。セーブデータはこの端末に保存されます。</p>
-  <p class="portal-warn">※ R18作品は文章のみの表現です。18歳未満の方はプレイできません。</p>
+  <p class="portal-note">ブラウザでそのまま遊べる、星と図書館の物語。セーブデータはこの端末に保存されます。</p>
+  <p class="portal-warn">※ 全年齢向け作品です。BGM・SEが再生されますので、音量にご注意ください。</p>
   <div id="cards" class="cards"></div>
-  <footer class="portal-foot">VN Arcade — 全作品オリジナル／画像は後から差し替え可能な設計です</footer>
+  <footer class="portal-foot">星屑ライブラリ ― 全年齢向けビジュアルノベル／全素材オリジナル</footer>
 </section>
 
 <!-- ============ 年齢確認 ============ -->
@@ -136,7 +136,7 @@
       <header class="cfg-head">
         <div class="cfg-head-l">
           <div class="cfg-eyebrow">SYSTEM CONFIGURATION</div>
-          <h2 class="cfg-title"><span id="cfgGameTitle">VN Arcade</span><span class="cfg-title-sub">システム設定</span></h2>
+          <h2 class="cfg-title"><span id="cfgGameTitle">星屑ライブラリ</span><span class="cfg-title-sub">システム設定</span></h2>
         </div>
         <button class="cfg-close" id="configClose" type="button">閉じる</button>
       </header>
@@ -213,23 +213,10 @@
         </section>
         <section class="cfg-pane" data-pane="sound">
           <div class="cfg-item">
-            <div class="cfg-lab"><h3>BGM音量</h3><p>各作品のテーマ曲の大きさ</p></div>
+            <div class="cfg-lab"><h3>BGM音量</h3><p>場面ごとに切り替わるBGMの大きさ</p></div>
             <div class="ctl-slider" data-slider="bgmVol" tabindex="0" role="slider" aria-label="BGM音量">
               <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
               <div class="ctl-val" id="ctlBgmVolVal">50%</div>
-            </div>
-          </div>
-          <div class="cfg-item">
-            <div class="cfg-lab"><h3>ボイス音量</h3><p>R18シーンの台詞ボイスの大きさ</p></div>
-            <div class="ctl-slider" data-slider="voiceVol" tabindex="0" role="slider" aria-label="ボイス音量">
-              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
-              <div class="ctl-val" id="ctlVoiceVolVal">80%</div>
-            </div>
-          </div>
-          <div class="cfg-item">
-            <div class="cfg-lab"><h3>ボイス再生</h3><p>台詞ボイスを再生するかどうか</p></div>
-            <div class="ctl-seg" data-seg="voiceOn">
-              <button type="button" data-v="on">ON</button><button type="button" data-v="off">OFF</button>
             </div>
           </div>
           <div class="cfg-item">
@@ -239,7 +226,7 @@
               <div class="ctl-val" id="ctlSeVolVal">70%</div>
             </div>
           </div>
-          <p class="cfg-subhead">BGMとSEは全作品に収録されています。ボイスは『桜色シグナル』R18シーンの台詞のみです。</p>
+          <p class="cfg-subhead">BGMは場面ごとに切り替わります。SEは操作音と場面の効果音です。</p>
         </section>
         <section class="cfg-pane" data-pane="system">
           <div class="cfg-item">

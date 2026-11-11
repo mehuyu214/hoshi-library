@@ -601,7 +601,7 @@ readColorOn: cfg.readColorOn? "on": "off", fx: cfg.fx? "on": "off", boss: cfg.bo
 $$(`.ctl-seg[data-seg="${key}"] button`).forEach((b) => b.classList.toggle("on", b.dataset.v === String(val)));
 }
 function syncConfigUI() {
-$("#cfgGameTitle").textContent = G? G.title: "VN Arcade";
+$("#cfgGameTitle").textContent = G? G.title: "星屑ライブラリ";
 paintSlider(document.querySelector('[data-slider="speed"]'), 80 - cfg.speed, 0, 80);
 $("#ctlSpeedVal").textContent = speedLabel();
 paintSlider(document.querySelector('[data-slider="auto"]'), cfg.autoDelay, 400, 5000);
@@ -613,8 +613,8 @@ paintSlider(document.querySelector('[data-slider="bgmVol"]'), cfg.bgmVol ?? 50, 
 $("#ctlBgmVolVal").textContent = (cfg.bgmVol ?? 50) + "%";
 paintSlider(document.querySelector('[data-slider="seVol"]'), cfg.seVol ?? 70, 0, 100);
 $("#ctlSeVolVal").textContent = (cfg.seVol ?? 70) + "%";
-paintSlider(document.querySelector('[data-slider="voiceVol"]'), cfg.voiceVol ?? 80, 0, 100);
-$("#ctlVoiceVolVal").textContent = (cfg.voiceVol ?? 80) + "%";
+const vvElm = document.querySelector('[data-slider="voiceVol"]');
+if (vvElm) { paintSlider(vvElm, cfg.voiceVol ?? 80, 0, 100); $("#ctlVoiceVolVal").textContent = (cfg.voiceVol ?? 80) + "%"; }
 $("#readColorItem").classList.toggle("off", !cfg.readColorOn);
 const art = $("#cfgArt"), panel = el.configScr.querySelector(".cfg-panel");
 if (G) { art.src = G.images.char; art.parentElement.style.display = ""; panel.classList.add("has-art"); $("#cfgBg").style.backgroundImage = `url("${kvOf(G)}")`; }

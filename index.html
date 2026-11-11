@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>星屑ライブラリ ― 消えた彗星と七日間の夏</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ ポータル（作品選択） ============ -->
+<section id="portal" class="screen">
+  <div class="portal-bg"><img id="portalBgA" alt=""><img id="portalBgB" alt=""></div>
+  <div class="portal-shade"></div>
+  <header class="portal-head">
+    <div class="logo-type"><span class="logo-main">VN Arcade</span><span class="logo-sub">オンライン・ビジュアルノベル</span></div>
+    <div class="portal-tools">
+      <button id="portalConfigBtn" class="tool-btn" type="button">コンフィグ</button>
+    </div>
+  </header>
+  <p class="portal-note">ブラウザでそのまま遊べる、5つの物語。セーブデータはこの端末に保存されます。</p>
+  <p class="portal-warn">※ R18作品は文章のみの表現です。18歳未満の方はプレイできません。</p>
+  <div id="cards" class="cards"></div>
+  <footer class="portal-foot">VN Arcade — 全作品オリジナル／画像は後から差し替え可能な設計です</footer>
+</section>
+
+<!-- ============ 年齢確認 ============ -->
+<div id="gate" class="modal-wrap" hidden>
+  <div class="modal-card">
+    <h2>年齢確認</h2>
+    <p>この作品には成人向けの文章表現が含まれます。<br>あなたは18歳以上ですか？</p>
+    <div class="modal-btns">
+      <button id="gateYes" class="btn primary" type="button">はい、18歳以上です</button>
+      <button id="gateNo" class="btn" type="button">いいえ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 作品タイトル ============ -->
+<section id="titleScr" class="screen" hidden>
+  <div class="stage" id="titleStage">
+    <img class="ts-bg" id="tsBg" alt="">
+    <div class="ts-grad"></div>
+    <img class="ts-char" id="tsChar" alt="">
+    <div class="particles" id="tsParticles"></div>
+    <div class="ts-frame"></div>
+    <div class="ts-content">
+      <div class="ts-logo">
+        <div class="ts-logo-sub" id="tsLogoSub"></div>
+        <h1 class="ts-logo-main" id="tsLogoMain"></h1>
+        <div class="ts-logo-line"><span></span><span></span></div>
+        <div class="ts-heroine" id="tsHeroine"></div>
+      </div>
+      <nav class="ts-menu" id="tsMenu">
+        <button type="button" data-act="start">START<span>はじめから</span></button>
+        <button type="button" data-act="continue">CONTINUE<span>つづきから</span></button>
+        <button type="button" data-act="load">LOAD<span>セーブデータ</span></button>
+        <button type="button" data-act="config">CONFIG<span>設定</span></button>
+        <button type="button" data-act="extra">EXTRA<span>ギャラリー・分岐図</span></button>
+        <button type="button" data-act="back">WORKS<span>作品選択へ</span></button>
+      </nav>
+    </div>
+    <div class="ts-foot" id="tsFoot"></div>
+  </div>
+</section>
+
+<!-- ============ 本編 ============ -->
+<section id="game" class="screen" hidden>
+  <div class="stage" id="stage">
+    <div class="bg-grad" id="bgGrad"></div>
+    <img class="bg-img" id="bgA" alt="">
+    <img class="bg-img" id="bgB" alt="">
+    <img class="char-img" id="charImg" alt="">
+    <div class="particles" id="gameParticles"></div>
+    <div id="r18badge">R18 — 文章のみのシーンです</div>
+    <div id="replayBadge" hidden>回想モード</div>
+
+    <div id="msgwin">
+      <div id="namebox"></div>
+      <div id="textbox">
+        <div id="text"></div>
+        <div id="nextInd">▼</div>
+      </div>
+      <div id="quickbar">
+        <button type="button" data-q="qsave">Q.SAVE</button>
+        <button type="button" data-q="save">SAVE</button>
+        <button type="button" data-q="load">LOAD</button>
+        <button type="button" data-q="auto">AUTO</button>
+        <button type="button" data-q="skip">SKIP</button>
+        <button type="button" data-q="log">LOG</button>
+        <button type="button" data-q="config">CONFIG</button>
+        <button type="button" data-q="hide">HIDE</button>
+        <button type="button" data-q="title">TITLE</button>
+      </div>
+    </div>
+
+    <div id="choices" hidden></div>
+
+    <!-- バックログ -->
+    <div id="backlog" class="panel" hidden>
+      <div class="panel-head">
+        <h3>バックログ</h3><span class="panel-hint">行をタップすると、その場面に戻れます</span>
+        <button class="btn small" id="logClose" type="button">閉じる</button>
+      </div>
+      <div id="logLines" class="panel-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ セーブ/ロード ============ -->
+<div id="saveScr" class="modal-wrap top" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="saveTitle">セーブ</h2>
+      <div class="sheet-tools">
+        <span id="saveLegacy"></span>
+        <button class="btn small" id="saveClose" type="button">閉じる</button>
+      </div>
+    </div>
+    <div class="slot-quick" id="slotQuick"></div>
+    <div class="pager">
+      <button class="btn small" id="pagePrev" type="button">◀ 前のページ</button>
+      <span id="pageInfo"></span>
+      <button class="btn small" id="pageNext" type="button">次のページ ▶</button>
+    </div>
+    <div id="slots" class="slots"></div>
+  </div>
+</div>
+
+<!-- ============ コンフィグ ============ -->
+<div id="configScr" class="modal-wrap top" hidden>
+  <div class="cfg-bg" id="cfgBg"></div>
+  <div class="cfg-panel">
+    <div class="cfg-rail">CONFIGURATION</div>
+    <div class="cfg-frame">
+      <header class="cfg-head">
+        <div class="cfg-head-l">
+          <div class="cfg-eyebrow">SYSTEM CONFIGURATION</div>
+          <h2 class="cfg-title"><span id="cfgGameTitle">VN Arcade</span><span class="cfg-title-sub">システム設定</span></h2>
+        </div>
+        <button class="cfg-close" id="configClose" type="button">閉じる</button>
+      </header>
+      <nav class="cfg-tabs" id="cfgTabs">
+        <button type="button" class="cfg-tab on" data-tab="text"><span class="cfg-tab-en">TEXT</span><span class="cfg-tab-jp">文章</span></button>
+        <button type="button" class="cfg-tab" data-tab="display"><span class="cfg-tab-en">DISPLAY</span><span class="cfg-tab-jp">再生と画面</span></button>
+        <button type="button" class="cfg-tab" data-tab="sound"><span class="cfg-tab-en">SOUND</span><span class="cfg-tab-jp">音声</span></button>
+        <button type="button" class="cfg-tab" data-tab="system"><span class="cfg-tab-en">SYSTEM</span><span class="cfg-tab-jp">システム</span></button>
+      </nav>
+      <div class="cfg-panes">
+        <section class="cfg-pane on" data-pane="text">
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>文章表示速度</h3><p>本文が1文字ずつ表示される速さ</p></div>
+            <div class="ctl-slider" data-slider="speed" tabindex="0" role="slider" aria-label="文章表示速度">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlSpeedVal">普通</div>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>オートモード待機</h3><p>自動再生で次の文章へ進むまでの時間</p></div>
+            <div class="ctl-slider" data-slider="auto" tabindex="0" role="slider" aria-label="オートモード待機">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlAutoVal">1.6 秒</div>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>文字サイズ</h3><p>本文の文字の大きさ</p></div>
+            <div class="ctl-seg" data-seg="fontSize">
+              <button type="button" data-v="2.05">小</button><button type="button" data-v="2.35">中</button><button type="button" data-v="2.7">大</button>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>フォント</h3><p>本文の書体</p></div>
+            <div class="ctl-seg font-seg" data-seg="font">
+              <button type="button" data-v="mincho" style="font-family:'Hiragino Mincho ProN','Yu Mincho',serif">明朝</button><button type="button" data-v="gothic" style="font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif">ゴシック</button><button type="button" data-v="maru" style="font-family:'Hiragino Maru Gothic ProN','Yu Gothic',sans-serif">丸ゴシック</button>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>既読テキストの色分け</h3><p>読み終えた文章の色を変えて表示する</p></div>
+            <div class="ctl-seg" data-seg="readColorOn">
+              <button type="button" data-v="on">ON</button><button type="button" data-v="off">OFF</button>
+            </div>
+          </div>
+          <div class="cfg-item" id="readColorItem">
+            <div class="cfg-lab"><h3>既読テキストの色</h3><p>色分けに使う色</p></div>
+            <div class="ctl-swatches" id="ctlReadColor">
+              <button type="button" class="sw" data-c="#a8c6fa" style="--sw:#a8c6fa" aria-label="青"></button>
+              <button type="button" class="sw" data-c="#ffd9a0" style="--sw:#ffd9a0" aria-label="橙"></button>
+              <button type="button" class="sw" data-c="#b5e7a0" style="--sw:#b5e7a0" aria-label="緑"></button>
+              <button type="button" class="sw" data-c="#ffb7c5" style="--sw:#ffb7c5" aria-label="桃"></button>
+              <button type="button" class="sw" data-c="#d3b8ff" style="--sw:#d3b8ff" aria-label="紫"></button>
+              <button type="button" class="sw" data-c="#fdfbff" style="--sw:#fdfbff" aria-label="白"></button>
+            </div>
+          </div>
+        </section>
+        <section class="cfg-pane" data-pane="display">
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>メッセージウィンドウの濃さ</h3><p>台詞が表示される枠の背景の濃さ</p></div>
+            <div class="ctl-slider" data-slider="msgOpacity" tabindex="0" role="slider" aria-label="メッセージウィンドウの濃さ">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlOpacityVal">87%</div>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>画面エフェクト</h3><p>背景や立ち絵のフェード、装飾の動き</p></div>
+            <div class="ctl-seg" data-seg="fx">
+              <button type="button" data-v="on">ON</button><button type="button" data-v="off">OFF</button>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>画面モード</h3><p>ブラウザのフルスクリーン表示を切り替える</p></div>
+            <button type="button" class="cfg-action" id="cfgFullscreen">フルスクリーン切替</button>
+          </div>
+        </section>
+        <section class="cfg-pane" data-pane="sound">
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>BGM音量</h3><p>各作品のテーマ曲の大きさ</p></div>
+            <div class="ctl-slider" data-slider="bgmVol" tabindex="0" role="slider" aria-label="BGM音量">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlBgmVolVal">50%</div>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>ボイス音量</h3><p>R18シーンの台詞ボイスの大きさ</p></div>
+            <div class="ctl-slider" data-slider="voiceVol" tabindex="0" role="slider" aria-label="ボイス音量">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlVoiceVolVal">80%</div>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>ボイス再生</h3><p>台詞ボイスを再生するかどうか</p></div>
+            <div class="ctl-seg" data-seg="voiceOn">
+              <button type="button" data-v="on">ON</button><button type="button" data-v="off">OFF</button>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>SE音量</h3><p>クリックや決定などの操作音の大きさ</p></div>
+            <div class="ctl-slider" data-slider="seVol" tabindex="0" role="slider" aria-label="SE音量">
+              <div class="ctl-track"><div class="ctl-fill"></div><div class="ctl-thumb"></div></div>
+              <div class="ctl-val" id="ctlSeVolVal">70%</div>
+            </div>
+          </div>
+          <p class="cfg-subhead">BGMとSEは全作品に収録されています。ボイスは『桜色シグナル』R18シーンの台詞のみです。</p>
+        </section>
+        <section class="cfg-pane" data-pane="system">
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>スキップ対象</h3><p>SKIPで飛ばす文章の範囲</p></div>
+            <div class="ctl-seg" data-seg="skipMode">
+              <button type="button" data-v="read">既読のみ</button><button type="button" data-v="all">全て</button>
+            </div>
+          </div>
+          <div class="cfg-item">
+            <div class="cfg-lab"><h3>ボスキー</h3><p>Backspaceで作業用画面に切り替える</p></div>
+            <div class="ctl-seg" data-seg="boss">
+              <button type="button" data-v="on">ON</button><button type="button" data-v="off">OFF</button>
+            </div>
+          </div>
+          <div class="cfg-subhead">キー操作</div>
+          <div class="keylist">
+            <div class="keyrow"><div class="keycaps"><span class="keycap">Enter</span><span class="keycap">Space</span><span class="keycap">クリック</span></div><p>文章を進める</p></div>
+            <div class="keyrow"><div class="keycaps"><span class="keycap">Ctrl</span><span class="keycap dim">押している間</span></div><p>スキップ</p></div>
+            <div class="keyrow"><div class="keycaps"><span class="keycap">↑</span><span class="keycap">ホイール上</span></div><p>バックログを開く</p></div>
+            <div class="keyrow"><div class="keycaps"><span class="keycap">Backspace</span></div><p>ボスキー（作業用画面）</p></div>
+            <div class="keyrow"><div class="keycaps"><span class="keycap">Esc</span></div><p>開いている画面を閉じる</p></div>
+          </div>
+        </section>
+      </div>
+      <footer class="cfg-foot">
+        <button type="button" class="cfg-reset" id="cfgReset">設定を初期値に戻す</button>
+        <span class="cfg-foot-note">設定は自動で保存されます</span>
+      </footer>
+    </div>
+    <div class="cfg-art"><img id="cfgArt" alt=""></div>
+  </div>
+</div>
+<!-- ============ EXTRA ============ -->
+<div id="extraScr" class="modal-wrap top" hidden>
+  <div class="sheet wide">
+    <div class="sheet-head">
+      <h2 id="extraTitle">EXTRA</h2>
+      <button class="btn small" id="extraClose" type="button">閉じる</button>
+    </div>
+    <div class="extra-tabs">
+      <button type="button" data-tab="flow" class="on">フローチャート</button>
+      <button type="button" data-tab="gallery">ギャラリー</button>
+      <button type="button" data-tab="ends">エンディング</button>
+    </div>
+    <div id="extraBody" class="extra-body"></div>
+  </div>
+</div>
+
+<!-- ============ 確認ダイアログ ============ -->
+<div id="confirmScr" class="modal-wrap confirm" hidden>
+  <div class="modal-card">
+    <p id="confirmMsg"></p>
+    <div class="modal-btns">
+      <button id="confirmYes" class="btn primary" type="button">はい</button>
+      <button id="confirmNo" class="btn" type="button">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ボスキー偽装画面 ============ -->
+<div id="bossScr" hidden>
+  <div class="boss-doc">
+    <div class="boss-bar">売上集計表_第3四半期.xlsx — スプレッドシート</div>
+    <table>
+      <tr><th>月</th><th>売上（千円）</th><th>前年比</th><th>備考</th></tr>
+      <tr><td>4月</td><td>12,480</td><td>103.2%</td><td></td></tr>
+      <tr><td>5月</td><td>11,930</td><td>98.4%</td><td>GW要因</td></tr>
+      <tr><td>6月</td><td>13,205</td><td>107.1%</td><td></td></tr>
+      <tr><td>7月</td><td>12,764</td><td>101.9%</td><td></td></tr>
+      <tr><td>8月</td><td>—</td><td>—</td><td>集計中</td></tr>
+    </table>
+    <p class="boss-note">※ Backspaceキーでもう一度押すと元の画面に戻ります</p>
+  </div>
+</div>
+
+<div id="toast" hidden></div>
+
+<script src="data.js"></script>
+<script src="voice_manifest.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>

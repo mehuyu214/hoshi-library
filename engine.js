@@ -236,7 +236,7 @@ el.bgA.classList.remove("on"); el.bgB.classList.remove("on"); el.charImg.classLi
 curBgKey = null; curFaceSrc = null;
 buildParticles(el.gameParticles, g.id);
 stopAuto(); stopSkip();
-goTo(opts.scene || g.scenes[0].id);
+goTo(opts.scene || g.scenes[0].id, !!opts.noSet);
 }
 function resolve(id) {
 let guard = 0;
@@ -249,7 +249,7 @@ return n;
 }
 return null;
 }
-function goTo(id) { const n = resolve(id); if (!n) return backToTitle(); cur = n; showNode(n);}
+function goTo(id, noSet) { const n = resolve(id); if (!n) return backToTitle(); cur = n; showNode(n, noSet);}
 function nextId(n) {
 if (n.jump) return n.jump;
 const e = sceneMap[n.id]; if (!e) return null;
@@ -313,8 +313,10 @@ voiceAudio.volume = (cfg.voiceVol ?? 80) / 100;
 const pr = voiceAudio.play();
 if (pr && pr.catch) pr.catch(() => {});
 }
-function showNode(n) {
-if (n.set) applySet(n.set);
+function showNode(n, noSet) {
+// noSet: ロード時の再描画では、保存済み flags に適用結果が含まれている
+// 現在シーンの set を再適用しない（加算フラグの二重適用防止）。
+if (n.set && !noSet) applySet(n.set);
 if (n.bgm) startBgm(n.bgm);
 if (n.se) playSe(n.se);
 stopAuto();
@@ -498,22 +500,29 @@ return { game: G.id, scene: cur.id, flags: {...flags}, date: new Date().toISOStr
 text: (cur.text || "").slice(0, 120), love: flags.love || 0, thumb: captureThumb()};
 }
 function persistSaves() {
-if (!storeJSON(SAVES_KEY, saveBook)) {
+// 最終的な保存成否を返す。再試行も失敗した場合は false を返し、
+// 呼び出し元が失敗を明示できるようにする（成功と誤認させない）。
+if (storeJSON(SAVES_KEY, saveBook)) return true;
 // 容量超過時はサムネイルを落として再試行
 Object.values(saveBook.slots).forEach((r) => { if (r) r.thumb = null;});
 if (saveBook.quick) saveBook.quick.thumb = null;
-storeJSON(SAVES_KEY, saveBook);
+if (storeJSON(SAVES_KEY, saveBook)) {
 toast("容量の都合でサムネイルなしで保存しました");
+return true;
 }
+return false;
 }
+const SAVE_FAIL_MSG = "セーブに失敗しました（保存領域の空き容量不足の可能性があります）";
 function quickSave() {
 if (!G ||!cur) return;
-saveBook.quick = makeRec(); persistSaves(); toast("クイックセーブしました");
+saveBook.quick = makeRec();
+if (persistSaves()) toast("クイックセーブしました");
+else toast(SAVE_FAIL_MSG, 3600);
 }
 function loadRec(rec) {
 const g = GAMES.find((x) => x.id === rec.game); if (!g) return;
 hideLayer(el.saveScr);
-startGame(g, { scene: rec.scene, flags: rec.flags});
+startGame(g, { scene: rec.scene, flags: rec.flags, noSet: true});
 toast("ロードしました");
 }
 function slotCard(key, rec, label) {
@@ -548,7 +557,8 @@ if (!G ||!cur) return;
 const doSave = () => {
 const rec2 = makeRec();
 if (key === "quick") saveBook.quick = rec2; else saveBook.slots[key] = rec2;
-persistSaves(); renderSaveScr(); playSe("save"); toast("セーブしました");
+if (persistSaves()) { renderSaveScr(); playSe("save"); toast("セーブしました"); }
+else { renderSaveScr(); toast(SAVE_FAIL_MSG, 3600); }
 };
 if (rec) askConfirm(`${label} に上書きセーブしますか？`, doSave); else doSave();
 } else if (rec) loadRec(rec);

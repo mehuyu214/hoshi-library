@@ -457,7 +457,9 @@ hideLayer(el.backlog);
 flags = {...l.flags};
 backlog = backlog.slice(0, idx);
 stopAuto(); stopSkip();
-goTo(l.scene);
+// l.flags はそのシーンの set 適用後のスナップショット。再描画で set を
+// 再適用すると加算フラグが二重適用されるため、ロード時と同様に抑制する。
+goTo(l.scene, true);
 toast("その場面に戻りました");
 });
 el.logLines.appendChild(d);
